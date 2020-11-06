@@ -10,6 +10,10 @@
 
 - [v-model](https://codepen.io/MoodyBones/pen/pobKMMR)
 - [v-if/v-show](https://codepen.io/MoodyBones/pen/vYKaEXj)
+- [v-if/v-else-if](https://codepen.io/MoodyBones/pen/yLJqENg)
+- [v-bind or :](https://codepen.io/MoodyBones/pen/qBNyyoO)
+- [v-for - static number](https://codepen.io/MoodyBones/pen/JjKBaWW)
+- [v-for - object](https://codepen.io/MoodyBones/pen/MWeBPem)
 
 # Day 1 - Introduction & Resources
 
@@ -129,7 +133,41 @@ v-once
 - alternatively if you have a big component, and you don't want it loaded and chilling in the DOM all the time,
 - then it's better to use `v-if`
 
-<!-- # Day 2 -  -->
+# Day 2 - Directives continued
+
+### v-if / v-if-else
+
+- Conditionally render siblings
+
+### v-bind or :
+
+- For class and style bindings, creating dynamic props and more.
+- It's a very popular directive so it comes with a shortcut!
+
+### v-for
+
+- loops through a set of values
+- can also do a static number
+
+```html
+// you can grab more than one property // and write dynamic keys
+<p v-for="(value, key, index) in jokes" :key="`key-${index}-${value}`">
+  {{ index }}. {{ key }}: {{ value }}
+</p>
+
+data() { return { jokes: { question: 'What do you call a boomerand that won't
+come back?', answer: 'A stick', response: 'ROFL', } } }
+```
+
+```js
+// Static Number
+<ul class="">
+  <li v-for="num in 5" :key="num">{{ num }}</li>
+</ul>
+
+
+```
+
 <!-- # Day 3 -  -->
 <!-- # Day 4 -  -->
 <!-- # Day 5 -  -->
