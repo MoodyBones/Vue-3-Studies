@@ -6,7 +6,7 @@
 - 📎&nbsp;&nbsp; Link to [Starter Docs](https://github.com/sdras/intro-to-vue)
 - 🔮&nbsp;&nbsp; Start date: 2020/11/04 - yikes what a day to be alive!
 
-## I am creating a [Vue 3 cheatsheet](https://codepen.io/collection/nGrgGW) on CodePen as I learn
+## I have created a [Vue 3 cheatsheet](https://codepen.io/collection/nGrgGW) on CodePen
 
 - [v-model](https://codepen.io/MoodyBones/pen/pobKMMR)
 - [v-if/v-show](https://codepen.io/MoodyBones/pen/vYKaEXj)
@@ -14,6 +14,14 @@
 - [v-bind or :](https://codepen.io/MoodyBones/pen/qBNyyoO)
 - [v-for - static number](https://codepen.io/MoodyBones/pen/JjKBaWW)
 - [v-for - object](https://codepen.io/MoodyBones/pen/MWeBPem)
+- [v-once & v-pre](https://codepen.io/MoodyBones/pen/PozdZpB)
+- [v-on or @](https://codepen.io/MoodyBones/pen/XWKPdrR)
+- [v-html](https://codepen.io/MoodyBones/pen/LYZJbPd)
+- [v-text](https://codepen.io/MoodyBones/pen/mdEGOwY)
+
+## My completed exercises are viewable on [Codepen](https://codepen.io/collection/DrRLoJ)
+
+- [Directives](https://codepen.io/MoodyBones/pen/oNLPYmO)
 
 # Day 1 - Introduction & Resources
 
@@ -168,7 +176,104 @@ come back?', answer: 'A stick', response: 'ROFL', } } }
 
 ```
 
-<!-- # Day 3 -  -->
+# Day 3 - Directives Cont.
+
+### v-once & v-pre
+
+- v-once will not update once it's been rendered
+- v-pre will print out the inner text exactly how it is, including code (good for documentation)
+
+`{{$data}}`
+
+- this will print whatever is in data
+- great if you want to quickly check something fast, without opening dev tools
+- like a respnse from a server
+
+### v-on or @
+
+- extremely useful, so there is a shortcut for
+- great for binding events like click and mouseenter
+- you can pass in a parameter for the event (param)
+- you can also use ternaries directly
+- you can haev multiple bindings
+
+Example of multiple bindings
+
+```html
+<div
+  v-on="
+  mousedown: doThis,
+  mouseup: doThat
+"
+></div>
+```
+
+- this is great if you want to build games in Vue
+- because you can have a click and key event at the same time
+
+### v-html
+
+- great for stringd that have html elements that need to be rendered
+
+warning
+
+- do not accept user input and then put it to the page with `v-html`
+- incase you don't know what you're getting. you could get hacked.
+
+### v-text
+
+- similar to using the mustache template
+- use case for when you don't access to the mustache template and want to add to insert something inside a tag
+- If you want to dynamically update things then it is recommend that you use the mustache template because it is updated a little faster.
+
+## id
+
+- it needs to be unique to the DOM
+- best practice is to use a library that will generate unique IDs
+- uuid
+
+## modifiers
+
+### v-model.trim
+
+- Will string any leading or trailing whitespace from the bound string
+
+### v-model.number
+
+- changes strings to numbers
+
+### v-model.lazy
+
+- won't populate the content automatically, it will wait to bind until an even happens. It listens to change events instead of input
+- it is used a lot to aid in performance
+- and is used for input validation
+
+### @mousemove.stop
+
+- is comparable to e.stopPropagation()
+
+### @mousemove.prevent
+
+- is comparable to e.preventDefault()
+
+### @submit.prevent
+
+- will no longer reload the page on submission
+
+### @click.once
+
+- do not confuse it with v-once
+- this click event will be triggered once
+
+### @click.native
+
+- for listening to native evnts in the DOM
+
+## Keycodes
+
+- Vue 3 uses names instead of numbers for the Keycodes
+- this is because the HTML spec has changed and is deprecating the use of numbered keycodes
+
 <!-- # Day 4 -  -->
 <!-- # Day 5 -  -->
 
