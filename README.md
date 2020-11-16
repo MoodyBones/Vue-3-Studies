@@ -6,7 +6,7 @@
 - 📎&nbsp;&nbsp; Link to [Starter Docs](https://github.com/sdras/intro-to-vue)
 - 🔮&nbsp;&nbsp; Start date: 2020/11/04 - yikes what a day to be alive!
 
-## I have created a [Vue 3 cheatsheet](https://codepen.io/collection/nGrgGW) on CodePen
+## I have created a [Vue 3 Directives cheatsheet](https://codepen.io/collection/nGrgGW) on CodePen
 
 - [v-model](https://codepen.io/MoodyBones/pen/pobKMMR)
 - [v-if/v-show](https://codepen.io/MoodyBones/pen/vYKaEXj)
@@ -18,10 +18,15 @@
 - [v-on or @](https://codepen.io/MoodyBones/pen/XWKPdrR)
 - [v-html](https://codepen.io/MoodyBones/pen/LYZJbPd)
 - [v-text](https://codepen.io/MoodyBones/pen/mdEGOwY)
+- [Directives Exercise](https://codepen.io/MoodyBones/pen/oNLPYmO)
 
-## My completed exercises are viewable on [Codepen](https://codepen.io/collection/DrRLoJ)
+- and a bunch more pens!!
 
-- [Directives](https://codepen.io/MoodyBones/pen/oNLPYmO)
+# Codepen links to ALL my Vue 3 Collections
+
+- [Directives](https://codepen.io/collection/nGrgGW)
+- [Exercises/Challenges](https://codepen.io/collection/DrRLoJ)
+- [Methods](https://codepen.io/collection/nmomeM)
 
 # Day 1 - Introduction & Resources
 
@@ -274,7 +279,100 @@ warning
 - Vue 3 uses names instead of numbers for the Keycodes
 - this is because the HTML spec has changed and is deprecating the use of numbered keycodes
 
-<!-- # Day 4 -  -->
-<!-- # Day 5 -  -->
+# Day 4 - Methods
+
+## Methods
+
+- Are bound to the Vue instance
+- Incredibly useful for functions you would like to access in Directives
+- They can also be access in other parts, like lifecycle hooks, other methods, computed properties
+
+- **When you look at the Vue instance and the options API - that data is an object**
+- Methods are functions that hang off the Vue Instance Object!
+- `this` is this case, is always referring to the data
+
+### Creative Coding in Javascript
+
+- If you want to make generative colors
+- Hue values are very good for this
+- Because Hue is a big circle and so it won't ever fail
+- and you can keep going round, unlike hex or rbg where you'll hit an end
+
+Writing Vue is very declarative
+
+- we are holding state
+- we are changing the state in some way
+- and then we are out putting it to the page
+
+Codepen: [Methods - hold state, change state, output to page](https://codepen.io/MoodyBones/pen/ZEOmMbM)
+
+# Day 5 - Methods in Forms
+
+## Methods in Forms
+
+- [Codepen Example](https://codepen.io/MoodyBones/pen/VwjqpmY)
+- challenge is to create a form that posts to a server
+- server we will use: typicode json placeholder - it's great if you need to get some fake server responses to make sure things are evaluating correctly
+
+`@submit.prevent="submitForm"` will prevent the form from reloading the page on submission
+
+- use [Vuelidate](https://vuelidate.js.org/) for form validation
+
+```html
+<h1>Nina Simone Top 10</h1>
+<div>
+  <span>Sort by</span>
+  <button @click="sortLowest">Lowest rated</button>
+  <button @click="sortHighest">Highest rated</button>
+</div>
+<article>
+  <table>
+    <tr>
+      <th v-for="key in columns">{{ key }}</th>
+    </tr>
+    <tbody>
+      <tr v-for="entry in ratingsInfo">
+        <td v-for="key in columns">{{ entry[key] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+```
+
+```js
+data() {
+    return {
+      columns: ["title", "rating"], // this makes it easy to rename in the future
+      ratingsInfo: [
+        { title: "Feeling Good", rating: 1 },
+        { title: "My Baby Just Cares For Me", rating: 2 },
+        { title: "I Put A Spell On You", rating: 3 },
+        ...
+      ]
+    };
+  },
+  methods: {
+    sortHighest() {
+      this.ratingsInfo.sort((a, b) => (a.rating > b.rating ? 1 : -1));
+    },
+    sortLowest() {
+      this.ratingsInfo.sort((a, b) => (a.rating < b.rating ? 1 : -1));
+    }
+  }
+```
+
+- `this` binding is very important
+- We want to establish a relationship with properties
+- Ee can not use an arrow function at the top level
+- because it would not create the binding!!
+- e.g. `sortLower() => {}` will not create the binding
+
+<!-- # Day 6 - Computed
+
+## Computed -->
+<!-- # Day 7 -  -->
+<!-- # Day 8 -  -->
+<!-- # Day 9 -  -->
+<!-- # Day 10 -  -->
 
 ### Huge thanks to Sarah Drasner & the Frontend Masters Team.
