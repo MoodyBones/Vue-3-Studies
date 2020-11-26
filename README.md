@@ -367,10 +367,53 @@ data() {
 - because it would not create the binding!!
 - e.g. `sortLower() => {}` will not create the binding
 
-<!-- # Day 6 - Computed
+# Day 6 - Computed
 
-## Computed -->
-<!-- # Day 7 -  -->
+## Computed
+
+- Computed properties are calculations that will be cached and
+- will only update when needed
+
+- Highly performant but use with understanding
+
+- Computed properties give us a new view onto that data
+- you are not mutating data
+- but we are able to do something with the data and return a different value to it
+- it will on be reevaluated or recalculated when the data is changed - so it's very performant
+
+```js
+const App = {
+  data() {
+    return {
+      userData: '',
+    }
+  },
+  computed: {
+    greeting() {
+      return `You're a monster, ${this.userData}!`
+    },
+  },
+}
+```
+
+## Computed vs Methods
+
+Computed
+
+- Runs only when a dependency has changed
+- Cached - this can be a gotcha, and you may need to use a method instead!
+- Should be used as a property, in place of data
+- By default getter only. but you can define a setter
+
+Methods
+
+- Runs whenever an update occurs
+- Not cached
+- Are typically invoked from v-on/@, but flexible
+- getter/setter
+
+# Day 7 - Computed cont.
+
 <!-- # Day 8 -  -->
 <!-- # Day 9 -  -->
 <!-- # Day 10 -  -->
