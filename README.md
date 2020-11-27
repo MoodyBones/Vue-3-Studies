@@ -394,6 +394,9 @@ const App = {
     },
   },
 }
+// it looks like a method but its not
+// use it like data
+// remember you are putting a new view of that data
 ```
 
 ## Computed vs Methods
@@ -402,8 +405,10 @@ Computed
 
 - Runs only when a dependency has changed
 - Cached - this can be a gotcha, and you may need to use a method instead!
-- Should be used as a property, in place of data
+- **Should be used as a property, in place of data**
+- are a new view on the data
 - By default getter only. but you can define a setter
+- you can filter through large amounts of data without any dependencies - is a big strength of computed properties
 
 Methods
 
@@ -413,6 +418,21 @@ Methods
 - getter/setter
 
 # Day 7 - Computed cont.
+
+- Computed is great for search
+- it's in the place of the data
+- you can filter large amounts of data peformantly
+- use regex for filtering data
+
+## Exercises
+
+- a form with 3 inputs and 1 button
+  - heading "Add a new post"
+  - input "title"
+  - input "author name"
+  - dropdown input "Add a new label"
+  - button "Add a new blog post"
+- dropdown "Filter by label"
 
 <!-- # Day 8 -  -->
 <!-- # Day 9 -  -->
