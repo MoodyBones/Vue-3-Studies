@@ -434,7 +434,227 @@ Methods
   - button "Add a new blog post"
 - dropdown "Filter by label"
 
-<!-- # Day 8 -  -->
+Form
+
+```html
+<form @submit.prevent="addPost">
+  <button type="submit"></button>
+</form>
+```
+
+# Day 8 - Differences in Vue 2 & 3: Filters
+
+- Surface API is the same
+- reactivity system in different in Vue 3
+- New Advanced Compisition API
+- deprecated filters
+- because you can do everything with a computed property instead
+- they wanted to make Vue 3 smaller
+
+**You can't pass params with computed properties, but you can with methods**
+
+### Computed is good for:
+
+- Adding currency
+- Dates 1st 2nd etc
+- filtering large maount of data based on user input
+- creating data visualizations you can explore
+
+## Watcher & Vue's Reactivity System
+
+to dive in deeper - how vue 3 uses reactivity
+it's important for debugging or to understand how things update
+
+### What is reactive?
+
+- "Reactive programming is programming with asynchrouns data streams"
+- frameworks that use it: RxJs, Angular, Vue, MobEx
+- **"A stream is sequence of ongoing events ordered in time that offer some hooks with which to observe it"**
+- "When we use reactive premises for building applications, this means it's very easy to update state in reaction to events."
+
+e.g. a hover state that has a transition, theres the moment that you hover on it, then the transition state in which it's changing, and then the end state
+
+You have hooks in which you can observe the start, the transition & the end part.
+
+In Frontend development we are mostly reacting to state change
+To dive further [Andre Staltz post](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
+
+### How does Vue3 do This
+
+- Detect when theres a change in one the values
+- Track the function that changes it
+- Trigger the function so it can update the final value
+
+## Proxies
+
+- are a new JS feature
+- It is "An Object that encases another object or functions and allows you to intercept it."
+
+`new Proxy(target, handler)`
+
+### Basic Proxy Syntax
+
+```js
+const dinner = {
+  meal: 'tacos',
+}
+
+const handler = {
+  get(target, prop) {
+    return target[prop]
+  },
+}
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+// tacos
+```
+
+### Intercepted
+
+```js
+const dinner = {
+  meal: 'tacos',
+}
+
+const handler = {
+  get(target, prop) {
+    console.log('intercepted!') // we can intercept it
+    return target[prop]
+  },
+}
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+// tacos
+// intercepted!
+```
+
+### JS trap
+
+```js
+const dinner = {
+  meal: 'tacos',
+}
+
+const handler = {
+  get(target, prop) {
+    // This a trap in Javascript
+    console.log(`We swapped out your dinner`)
+    return 'burger' // we return a burger instead
+  },
+}
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+// burger
+```
+
+### Use Reflect to bind `this` properly
+
+```js
+const dinner = {
+  meal: 'tacos',
+}
+
+const handler = {
+  get(target, prop, receiver) {
+    return Reflect.get(...arguments) // this is vanilla js
+  },
+}
+// Use Reflect to bind `this` properly
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+// tacos
+```
+
+### Track the things changing we can intercept
+
+- This is important when using watchers
+- because we want to track what dependencies are changing during the process
+
+```js
+const dinner = {
+  meal: 'tacos',
+}
+
+const handler = {
+  get(target, prop, receiver) {
+    track(target, prop) // a function that will collect and track the info
+    return Reflect.get(...arguments) // and still return
+  },
+}
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+// tacos
+```
+
+### Get & Set
+
+- remember computed properties are only get only (not set)
+- we're able to track all the properties that are changing
+- then trigger a new function that will update things accordingly
+- trigger in Vue runs the changes
+
+```js
+const dinner = {
+  meal: tacos,
+}
+
+const handler = {
+  get(target, prop, receiver) {
+    track(target, prop)
+    return Reflect.get(...arguments)
+  },
+  set(target, key, value, receiver) {
+    trigger(target, key)
+    return Reflect.set(...arguments)
+  },
+}
+
+const proxy = new Proxy(dinner, handler)
+console.log(proxy.meal)
+```
+
+### If the value is the same then don't do stuff
+
+```js
+const dinner = {
+  meal: tacos,
+}
+
+const handler = {
+  get(target, prop, receiver) {
+    track(target, prop)
+    return Reflect.get(...arguments)
+  },
+  set(target, key, value, receiver) {
+    let oldValue = target[key]
+    let result = Reflect.set(...arguments)
+    if (oldValue != result) {
+      trigger(target, key)
+    }
+    return result
+  },
+}
+```
+
+~~Detect when theres a change in one of the values~~ Proxies do this automaticiall for us
+**Track** the function that changes it
+**Trigger** the function so it can update the final value
+
+### Other Vue 3 Reactivity Notes
+
+- in Vue 2 everything was all together,
+- in Vue 3 everything became very tree shakable and we're doing code splitting, a few other things
+- That means that everything exists in seperate packages - reactivity, templates, transitions are all seperate
+- so if you're not using one of them, it will get rid of it, then you get a smaller build
+
+To explore further go to: github/com/vuejs/vue-next/tree/master/packages/reactivity
+Proxies are ES6 (previously Object.defineProperty)
+
 <!-- # Day 9 -  -->
 <!-- # Day 10 -  -->
 
