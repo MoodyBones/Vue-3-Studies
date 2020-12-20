@@ -655,7 +655,182 @@ const handler = {
 To explore further go to: github/com/vuejs/vue-next/tree/master/packages/reactivity
 Proxies are ES6 (previously Object.defineProperty)
 
-<!-- # Day 9 -  -->
+# Day 9 - Watchers
+
+## Watchers
+
+- Good for asynchronous updates
+- updates/transitions on data changes
+- Watch any data property that we created
+- the data the watcher can have the same name
+
+```js
+data() {
+  return {
+    counter: 0
+  },
+},
+watch: {
+  counter() {
+    console.log(`the data has changed`)
+  }
+}
+```
+
+- we are hooking into the reactivity sysytem
+- whenever something chnaged, please let us know
+- it gives a layer we can intercept or changed
+
+**We also have access to the new value and the old value**
+
+```js
+watch: {
+  watchedProperty(newValue, oldValue) {
+    // your code goes here
+  }
+}
+```
+
+- if you have a data visualization
+- and you want to animate a the part between the new and the old you can
+
+**We can gain access to nested values**
+
+```js
+watch: {
+  watchedProperty {
+    deep: true,
+    watchedProperty(newValue, oldValue) {
+    // your code goes here
+    }
+  }
+}
+```
+
+```js
+data() {
+  return {
+    counter: 0
+  },
+},
+watch: {
+  counter(newValue, oldValue) {
+    console.log(`the data has changed, it was ${oldValue} it is now ${newValue}`)
+  }
+}
+```
+
+[Check out this cool pen of Sarah's](https://codepen.io/sdras/pen/dRqZOy)
+
+- when you scroll to the bottom it triggers a call to the api to return more beers
+
+```js
+const App = {
+  data() {
+    return {
+      bottom: false,
+      beers: [],
+    }
+  },
+  watch: {
+    bottom(newValue) {
+      if (newValue) {
+        this.addBeer()
+      }
+    },
+  },
+  created() {
+    // lifecycle hook, as soon as this is created start listening to the scroll
+    window.addEventListener('scroll', () => {
+      this.bottom = this.bottomVisible() // this.bottom calls this.bottomVisible
+    })
+    this.addBeer()
+  },
+  methods: {
+    bottomVisible() {
+      // we are evaluating the scroll height and returning whether or not we've hit the bottom
+      const scrollY = window.scrollY
+      const visible = document.documentElement.clientHeight
+      const pageHeight = document.documentElement.scrollHeight
+      const bottomOfPage = visible + scrollY >= pageHeight
+      return bottomOfPage || pageHeight < visible
+    },
+    addBeer() {
+      // using axios to get more beers
+      axios.get('https://api.punkapi.com/v2/beers/random').then((response) => {
+        let api = response.data[0]
+        let apiInfo = {
+          name: api.name,
+          desc: api.description,
+          img: api.image_url,
+          tips: api.brewers_tips,
+          tagline: api.tagline,
+          food: api.food_pairing,
+        }
+        this.beers.push(apiInfo) // pushes into beers array
+        if (this.bottomVisible()) {
+          this.addBeer()
+        }
+      })
+    },
+  },
+}
+
+Vue.createApp(App).mount('#app')
+```
+
+**When watching a property you trigger a method on change**
+
+```js
+data() {
+  return {
+    bottom: false,
+    beers: []
+  }
+},
+watch: {
+  bottom(newValue) {
+    if (newValue) {
+      this.addBeer();
+    }
+  }
+}
+
+```
+
+```html
+<div id="app">
+  <section>
+    <h1>🍺 Make yourself some Punk Beers 🍻</h1>
+    <div v-if="!beers.length" class="loading">Loading...</div>
+    <!-- use v-if Loading if waiting on an api -->
+    <div v-for="beer in beers" class="beer-contain">
+      <div class="beer-img">
+        <img :src="beer.img" height="350" />
+      </div>
+      <div class="beer-info">
+        <h2>{{ beer.name }}</h2>
+        <p class="bright">{{ beer.tagline }}</p>
+        <p><span class="bright">Description:</span> {{ beer.desc }}</p>
+        <p><span class="bright">Tips:</span> {{ beer.tips }}</p>
+        <h3 class="bright">Food Pairings</h3>
+        <ul>
+          <li v-for="item in beer.food">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+```
+
+You don't have to build your own scroller, you can use this one build by a Vue core team member
+[Vue Virtual Scroller](https://github.com/Akryum/vue-virtual-scroller)
+
+- fast
+- lazy
+
+[You can change data sets based on Watchers](https://codepen.io/sdras/pen/OWZRZL?TB_iframe=true&width=370.8&height=658.8)
+
 <!-- # Day 10 -  -->
 
 ### Huge thanks to Sarah Drasner & the Frontend Masters Team.
