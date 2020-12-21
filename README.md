@@ -679,7 +679,7 @@ watch: {
 
 - we are hooking into the reactivity sysytem
 - whenever something chnaged, please let us know
-- it gives a layer we can intercept or changed
+- it gives a layer we can intercept or change
 
 **We also have access to the new value and the old value**
 
@@ -831,6 +831,327 @@ You don't have to build your own scroller, you can use this one build by a Vue c
 
 [You can change data sets based on Watchers](https://codepen.io/sdras/pen/OWZRZL?TB_iframe=true&width=370.8&height=658.8)
 
-<!-- # Day 10 -  -->
+# Day 10 - Watchers Exercise
+
+ToDO
+
+- Use a watcher to change one of the values
+- Pay attention to the set timeout
+- watchers are good with API's - asynch functions/ when returnin data
+- ask a question "Is it nice out today?"
+- click button to find out
+- return [yesno wtf api](https://yesno.wtf/#)
+- also conditionally render an emoji & bg change
+  😎
+  👎
+  🙃
+
+### yesno wtf api
+
+```js
+{
+  "answer": "yes",
+  "forced": false,
+  "image": "https://yesno.wtf/assets/yes/2.gif"
+}
+
+```
+
+PARAMS: force
+TYPE: string
+DESCRIPTION: Force answer, can be yes, no or maybe
+
+[My Solution](https://codepen.io/MoodyBones/pen/KKgvyRP)
+
+```js
+<template>
+  <div id="app">
+    <p>Is it nice out today?</p>
+    <button
+      @click="getAnswer"
+    >
+      Click to find out
+    </button>
+    <div>{{ answer }}</div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      answer: '',
+      buttonClicked: 0,
+      yes: '😎',
+      no: '👎',
+      maybe: '🙃'
+    };
+  },
+  watch: {
+    answer(newValue, oldValue) {
+      if (newValue) {
+        console.log(`the data has changed, it was ${oldValue} it is now ${newValue}`)
+        if (newValue === 'yes') {
+            this.answer = this.yes
+          } else if (newValue === 'no') {
+            this.answer = this.no
+          } else if (newValue === 'maybe') {
+            this.answer = this.maybe
+          }
+      }
+    }
+  },
+  methods: {
+    increment() {
+      this.buttonClicked++
+    },
+    getAnswer() {
+      this.answer = 'Thinking...'
+      axios
+        .get('https://yesno.wtf/api')
+        .then(response => {
+            this.answer = response.data.answer
+       })
+       .catch(error => {
+            this.answer = 'Error! Could not reach the API. ' + error
+        })
+
+    }
+  }
+};
+</script>
+```
+
+Sarah's Solution with setTimeout to reset
+
+```js
+<template>
+  <div id="app">
+    <button
+      @click="getTaco"
+    >
+      Click me to order a taco
+    </button>
+    <div>{{ orderStatus }}</div>
+    <div v-if="orderSubmitted">{{ orderSubmitted }}</div>
+  </div>
+</template>
+
+
+data() {
+  return {
+    orderStatus: 'where is my taco...',
+    orderSubmitted: null
+  }
+},
+methods: {
+  getTaco() {
+    this.orderStatus = '🌮!'
+  }
+},
+watch: {
+  orderStatus(newValue, oldValue) {
+    this.orderSubmitted = 'your order was submitted!';
+
+    setTimeout(() => this.orderSubmitted = null, 1000) // turns back to null after 1 second
+  }
+}
+```
+
+**Watchers are great for watching for change and then doing an animation**
+[Check out this pen](https://codepen.io/sdras/pen/RZGqxR)
+
+- we can watch the beginning values & end values
+- we can change them
+
+### Watchers changing other things
+
+- you can only watch one thing
+- but in that thing you can change other things by
+  - calling a method
+  - when you see something has changed, then you can change a different piece of data
+- if you are looking at one thing and changing another it's called a side effect!!!
+  - you are changing something that someone else doesn't really know about
+  - this is not good practice
+  - it's better to encapsulate things in methods and call the method
+  - this is different from computed properties, because computed allows you a view on a piece of data
+  - where watchers allow you to affect multiple pieces
+
+# Components
+
+- there are multiple ways of declaring Vue components
+- they are very flexible
+- not all are useful
+- simpler ones are not as uselful
+
+## Templates
+
+- Vue used HTML based template syntax to bind the Vue instance to the DOM, very useful for components
+- Templates are optional, you can also write render function with JSX support
+
+### the different types
+
+- Strings (only useful for small cases)
+- Script tags
+- Single file components (most common use case in a Vue app)
+
+### Strings (only useful for small cases)
+
+```js
+
+//js
+const App = {
+  template = '<h1>hello world</h1>'
+}
+Vue.createApp(App).mount('#app')
+```
+
+Why use components in a Vue app?
+
+- it makes things clearer and easier to understand
+
+## Components
+
+- A collection of elements that are encapsulated into a group that can be accessed through one single element
+- Makes traversing and maintaining code easier and more legible
+
+#### Simplest Component
+
+```js
+;<div class="App">
+  <p>{{ message }}</p>
+  <component-a />
+</div>
+
+const app = Vue.createApp({
+  data() {
+    return {
+      message: 'hi from parent',
+    }
+  },
+})
+
+//because we have named the above app
+app.component('component-a', {
+  template: <p>hi from child</p>,
+})
+
+app.mount('#app')
+```
+
+#### Slightly better component with props
+
+```js
+<div id="app">
+  <div>
+    <h2>Every time you see a child component, you have to give me a taco</h2>
+    <app-child :text="message"></app-child> // : === v-bind
+    <app-child :text="message"></app-child>
+    <app-child :text="message"></app-child>
+  </div>
+</div>
+
+const app = Vue.createApp({
+  data() {
+    return {
+      message: 'Give me a taco!'
+    }
+  }
+})
+
+app.component('app-child', {
+  props: ['text'],
+  template: `<div>{{ text }}</div>`
+})
+
+app.mount('#app')
+
+```
+
+## Props
+
+- Props down & Events up
+- Padssing data down from the parent to the child
+- the parent should own the state, and the child is just receiving it
+- think it like the child is holding a variable and waiting on the parent to send it down
+- Props are intended for one way communication
+
+#### Types & Validation
+
+```js
+app.component('app-child', {
+  props: {
+    text: {
+      type: String,
+      required: true,
+      default: 'hello mr. magoo',
+    },
+  },
+  template: `<div>{{ text }}<div>`,
+})
+```
+
+- if you put the wrong type, it won't break the code, it'll just give you warnings in dev mode
+
+**Objects and arrays need their defaults to be returned from a function: **
+
+```js
+text: {
+  type: Array,
+  default: function () {
+    return ['al pastor', 'carne asada']
+  }
+}
+
+text: {
+  type: Array,
+  default: () => ['al pastor', 'carne asada']
+}
+```
+
+You don't need to necessarily pass the data in props to the child, either, you have the option of using vue instance data or a static value as you see fit:
+
+https://codepen.io/sdras/pen/5a34f6ed12cf954202c6d38f1ceba633
+
+Not using the state of the parent
+`<child count="1"></child>`
+
+vs
+
+Using the state of the parent
+`<child :count="count"></child>`
+
+We use v-bind or : to dynamically bind props to data on the parent
+
+**Each component instance has its own isolated scope, data must be a function.**
+
+camelCasing will be converted
+props: ['booleanValue']
+
+In HTML it will be kebab-case:
+<checkbox :boolean-value="booleanValue"></checkbox>
+
+### Individual Script Component x-template
+
+- if you can't use single file Components
+- you can create them in script tags
+- then reference with the id
+
+```js
+<script type="text/x-template" id="comment-template">
+<li>
+	<img class="post-img" :src="commentpost.authorImg" />
+  <small>{{ commentpost.author }}</small>
+  <p class="post-comment">"{{ commentpost.text }}"</p>
+</li>
+</script>
+
+app.component('individual-comment', {
+  template: '#comment-template', // here you can reference the id
+  props: ['commentpost']
+})
+
+
+```
 
 ### Huge thanks to Sarah Drasner & the Frontend Masters Team.
